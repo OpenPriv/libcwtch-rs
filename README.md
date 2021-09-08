@@ -1,6 +1,8 @@
 # libCwtch-rs
 
-Rust bindings for libCwtch 
+Rust bindings for [libCwtch](https://git.openprivacy.ca/cwtch.im/libcwtch-go/)
+
+Example echobot in examples/echobot.rs (`cargo run --example echobot` -- assumes tor is on $PATH)
 
 ## Building
 
@@ -15,7 +17,7 @@ the 'preamble from import "C"' section as it imports headers required for the C 
 but that we don't want to create rust bindings for (like importing stdlib.h). Then:
 
 ```
-bindgen libCwtch.h -o src/gobindings/mod.rs
+bindgen libCwtch.h -o src/cwtchlib_go/bindings.rs
 ```
 
 ### Todo

@@ -5,12 +5,9 @@
 
 use std::ffi::{CString};
 use std::ffi::{CStr};
-use std::collections::HashMap;
-
-use serde::{Deserialize, Serialize};
 
 use super::{CwtchLib};
-use crate::gobindings;
+use crate::cwtchlib_go::bindings;
 
 struct c_str_wrap {
     raw: *mut i8,
@@ -35,14 +32,13 @@ impl Drop for c_str_wrap {
 
 // c_bind handles setting up c string arguments and freeing them
 // c_bind!( $fn_name ( [ $string_args ]* ; [ $non_string_args : $type ]* ) $c_function -> $return_type? )
-#[macro_export]
 macro_rules! c_bind {
     // macro for returnless fns
     ($func_name:ident ($($str:ident),* ; $($arg:ident: $t:ty),*) $bind_fn:ident) => {
         fn $func_name(&self,  $($str: &str, )* $($arg: $t, )*) {
             $(let $str = c_str_wrap::new($str);)*
             unsafe {
-                gobindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
+                bindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
             }
         }
     };
@@ -51,13 +47,13 @@ macro_rules! c_bind {
         fn $func_name(&self,  $($str: &str, )* $($arg: $t, )*) -> String {
             $(let $str = c_str_wrap::new($str);)*
             unsafe {
-                let result_ptr = gobindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
+                let result_ptr = bindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
                 let result = match CStr::from_ptr(result_ptr).to_str() {
                     Ok(s) => s.to_owned(),
                     Err(_) => "".to_string()
                 };
                 // return ownership of string memory and call the library to free it
-                gobindings::c_FreePointer(result_ptr);
+                bindings::c_FreePointer(result_ptr);
                 result
             }
         }
@@ -67,26 +63,20 @@ macro_rules! c_bind {
         fn $func_name(&self,  $($str: &str, )* $($arg: $t, )*) -> $bind_fn_ty {
             $(let $str = c_str_wrap::new($str);)*
             unsafe {
-                let result = gobindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
+                let result = bindings::$bind_fn($( $str.raw, $str.len, )* $($arg,)* );
                 result
             }
         }
     };
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Event {
-    EventType: String,
-    Data: HashMap<String, String>
-}
+pub struct CwtchLibGo {}
 
-pub struct GoCwtchLib {}
-
-impl GoCwtchLib {
+impl CwtchLibGo {
     c_bind!(send_profile_event(profile, event_json;) c_SendProfileEvent);
 }
 
-impl CwtchLib for GoCwtchLib {
+impl CwtchLib for CwtchLibGo {
     c_bind!(start_cwtch(app_dir, tor_path;) c_StartCwtch -> i32);
     c_bind!(send_app_event(event_json;) c_SendAppEvent);
     c_bind!(get_appbus_event(;) c_GetAppBusEvent -> String);
@@ -101,7 +91,7 @@ impl CwtchLib for GoCwtchLib {
     c_bind!(send_message(profile, contact, msg;) c_SendMessage);
     c_bind!(send_invitation(profile, contact, target;) c_SendInvitation);
     fn reset_tor(&self) {
-        unsafe { gobindings::c_ResetTor(); }
+        unsafe { bindings::c_ResetTor(); }
     }
     c_bind!(create_group(profile, server, name;) c_CreateGroup);
     c_bind!(delete_profile(profile, pass;) c_DeleteProfile);
@@ -113,6 +103,6 @@ impl CwtchLib for GoCwtchLib {
     c_bind!(set_group_attribute(profile, group, key, val;) c_SetGroupAttribute);
 
     fn shutdown_cwtch(&self) {
-        unsafe { gobindings::c_ShutdownCwtch(); }
+        unsafe { bindings::c_ShutdownCwtch(); }
     }
 }

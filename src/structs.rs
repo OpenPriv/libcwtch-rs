@@ -1,14 +1,17 @@
-#![allow(non_snake_case)]
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
+#[allow(non_snake_case)]
 /// Struct to serialize/deserialize events coming off the Cwtch appbus
 pub struct CwtchEvent {
+    /// the type of event, as defined in https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/event/common.go
     pub event_type: String,
-    pub event_ID: String, // event_ID because golang naming converntions in libCwtch-go
+    /// event ID that can be used to respond to some events and keep them differentiated (event_ID because golang naming conventions in libCwtch-go)
+    pub event_ID: String,
+    /// a map of keys and values of arguments for the event as defined in https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/event/common.go
     pub data: HashMap<String, String>,
 }
 
@@ -16,10 +19,15 @@ pub struct CwtchEvent {
 #[serde(rename_all = "camelCase")]
 /// Struct to serialize/deserialize contacts coming from libcwtch-go
 pub struct Contact {
+    /// onion address / id of the contact
     pub onion: String,
+    /// display name of the contact, as determined in libcwtch-go from name specified by contact
     pub name: String,
+    /// contact connection status: [DISCONNECTED, CONNECTING, CONNECTED, AUTHENTICATED, SYNCED, FAILED, KILLED]
     pub status: String,
+    /// contact authorization state as set by profile: [unknown, approved, blocked]
     pub authorization: String,
+    /// is this contact a group? if so "onion" will be a group ID
     pub is_group: bool,
     //attr: HashMap<String, String>,
 }
@@ -27,29 +35,43 @@ pub struct Contact {
 #[derive(Serialize, Deserialize, Debug)]
 /// Struct to serialize/deserialize servers coming from libcwtch-go
 pub struct Server {
+    /// onion address of the server
     pub onion: String,
+    /// server connection status: [DISCONNECTED, CONNECTING, CONNECTED, AUTHENTICATED, SYNCED, FAILED, KILLED]
     pub status: String,
 }
 
 #[derive(Debug)]
 /// Struct to serialize/deserialize profiles coming from libcwtch-go
 pub struct Profile {
+    /// onion address / ID of the profile
     pub onion: String,
+    /// nick name of the onion as supplied by libcwtch-go based on "name" attribute
     pub nick: String,
+    /// path to a profile image, controled by "picture" attribute
     pub image_path: String,
+    /// all profile attributes
     pub attr: HashMap<String,String>,
+    /// map of contacts [ onion => contact ]
     pub contacts: HashMap<String, Contact>,
+    /// map of servers [ onion => server ]
     pub servers: HashMap<String, Server>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 /// Struct to serialize/deserialize messages sent over Cwtch between profiles / contacts
 pub struct Message {
+    /// overlay id that the message is targeting as defined in cwtch/model/overlay.go
+    /// [  OverlayChat = 1, OverlayInviteContact = 100, OverlayInviteGroup = 101, OverlayFileSharing = 200 ]
     pub o: i64,
+    /// data of the message
     pub d: String
 }
 
 impl Profile {
+    /// Create a new profile populated from supplied data
+    ///   contacts_json as supplied by libcwtch-go, a map of contacts
+    ///   server_list as supplied by libcwtch-go, a map of servers
     pub fn new(identity: &str, name: &str, picture: &str, contacts_json: &str, server_list: &str) -> Profile {
         let contacts = Profile::process_contacts(contacts_json);
         let servers = Profile::process_servers(server_list);

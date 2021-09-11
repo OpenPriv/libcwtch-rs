@@ -1,8 +1,12 @@
+#![doc = include_str!( "../README.md" )]
 #![doc(html_logo_url = "https://git.openprivacy.ca/cwtch.im/cwtch-ui/media/branch/trunk/cwtch.png")]
+#![doc(html_root_url = "https://git.openprivacy.ca/cwtch.im/libcwtch-rs")]
+#![deny(missing_docs)]
 
 mod cwtchlib_go;
 mod bindings_go;
 
+/// Basic structs using data from Cwtch and for deserializing JSON and serializing to JSON to communicate with Cwtch
 pub mod structs;
 
 /// Interface to a Cwtch app with API matching libcwtch
@@ -81,4 +85,3 @@ pub trait CwtchLib {
 pub fn new_cwtchlib_go() -> impl CwtchLib {
     bindings_go::CwtchLibGo {}
 }
-

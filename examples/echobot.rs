@@ -6,7 +6,10 @@ use libcwtch::structs::{*};
 
 fn main() {
     let bot_home: String = "example_cwtch_dir".to_string();
-    std::fs::remove_dir_all(&bot_home);
+    match std::fs::remove_dir_all(&bot_home) {
+        Err(_e) => (),
+        _ => (),
+    }
     std::fs::create_dir_all(&bot_home).unwrap();
 
     let cwtch = libcwtch::new_cwtchlib_go();

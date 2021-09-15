@@ -1,6 +1,44 @@
-
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DefaultOnError};
 use std::collections::HashMap;
+use crate::structs::ConnectionState::Disconnected;
+
+#[derive(Serialize, Deserialize, Debug)]
+/// Defines the states a Cwtch connection can be in
+pub enum ConnectionState {
+    /// The Cwtch connection is not conected at all
+    Disconnected,
+    /// Cwtch is attempting to connect to the address, it may or may not be online
+    Connecting,
+    /// Cwtch has made a basic connection to the address, but not done authorization. The address is online but unverified as the desired target
+    Connected,
+    /// Cwtch has authenticated the desired connection
+    Authenticated,
+    /// In the case of a server connection, Cwtch has finished syncing messages from the server and is caught up
+    Synced,
+    /// The connection attempt failed
+    Failed,
+    /// The connection has been killed
+    Killed
+}
+
+impl Default for ConnectionState {
+    fn default() -> ConnectionState {
+        Disconnected
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "lowercase")]
+/// Defines the various authorization modes a contact can be in
+pub enum ContactAuthorization {
+    /// This is an unknown (new?) contact. The user has not approved them
+    Unknown,
+    /// The contact is approved by the user (manual action)
+    Approved,
+    /// The contact is blocked by the user, should be ignored
+    Blocked
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
@@ -15,6 +53,7 @@ pub struct CwtchEvent {
     pub data: HashMap<String, String>,
 }
 
+#[serde_as]
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 /// Struct to serialize/deserialize contacts coming from libcwtch-go
@@ -23,10 +62,11 @@ pub struct Contact {
     pub onion: String,
     /// display name of the contact, as determined in libcwtch-go from name specified by contact
     pub name: String,
-    /// contact connection status: [DISCONNECTED, CONNECTING, CONNECTED, AUTHENTICATED, SYNCED, FAILED, KILLED]
-    pub status: String,
-    /// contact authorization state as set by profile: [unknown, approved, blocked]
-    pub authorization: String,
+    #[serde_as(deserialize_as = "DefaultOnError")] // cwtch loads profile/contacts from storage and leaves status blank, it's filled in "soon" by events...
+    /// contact connection status
+    pub status: ConnectionState,
+    /// contact authorization state as set by profile
+    pub authorization: ContactAuthorization,
     /// is this contact a group? if so "onion" will be a group ID
     pub is_group: bool,
     //attr: HashMap<String, String>,
@@ -37,8 +77,8 @@ pub struct Contact {
 pub struct Server {
     /// onion address of the server
     pub onion: String,
-    /// server connection status: [DISCONNECTED, CONNECTING, CONNECTED, AUTHENTICATED, SYNCED, FAILED, KILLED]
-    pub status: String,
+    /// server connection status
+    pub status: ConnectionState,
 }
 
 #[derive(Debug)]

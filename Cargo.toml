@@ -7,6 +7,7 @@ license = "MIT"
 description = "libcwtch is an interface to a Cwtch app that allows creating of profiles to communicate with contacts over the Cwtch protocol"
 repository = "https://git.openprivacy.ca/cwtch.im/libcwtch-rs"
 readme = "README.md"
+documentation = "https://docs.rs/libcwtch/0.1.0/libcwtch/"
 
 [dependencies]
 libc = "0.2"

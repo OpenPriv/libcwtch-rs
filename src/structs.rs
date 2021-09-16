@@ -1,7 +1,7 @@
+use crate::structs::ConnectionState::Disconnected;
 use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DefaultOnError};
 use std::collections::HashMap;
-use crate::structs::ConnectionState::Disconnected;
 
 #[derive(Serialize, Deserialize, Debug)]
 /// Defines the states a Cwtch connection can be in
@@ -19,7 +19,7 @@ pub enum ConnectionState {
     /// The connection attempt failed
     Failed,
     /// The connection has been killed
-    Killed
+    Killed,
 }
 
 impl Default for ConnectionState {
@@ -37,7 +37,7 @@ pub enum ContactAuthorization {
     /// The contact is approved by the user (manual action)
     Approved,
     /// The contact is blocked by the user, should be ignored
-    Blocked
+    Blocked,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -62,7 +62,8 @@ pub struct Contact {
     pub onion: String,
     /// display name of the contact, as determined in libcwtch-go from name specified by contact
     pub name: String,
-    #[serde_as(deserialize_as = "DefaultOnError")] // cwtch loads profile/contacts from storage and leaves status blank, it's filled in "soon" by events...
+    #[serde_as(deserialize_as = "DefaultOnError")]
+    // cwtch loads profile/contacts from storage and leaves status blank, it's filled in "soon" by events...
     /// contact connection status
     pub status: ConnectionState,
     /// contact authorization state as set by profile
@@ -91,7 +92,7 @@ pub struct Profile {
     /// path to a profile image, controled by "picture" attribute
     pub image_path: String,
     /// all profile attributes
-    pub attr: HashMap<String,String>,
+    pub attr: HashMap<String, String>,
     /// map of contacts [ onion => contact ]
     pub contacts: HashMap<String, Contact>,
     /// map of servers [ onion => server ]
@@ -105,17 +106,30 @@ pub struct Message {
     /// [  OverlayChat = 1, OverlayInviteContact = 100, OverlayInviteGroup = 101, OverlayFileSharing = 200 ]
     pub o: i64,
     /// data of the message
-    pub d: String
+    pub d: String,
 }
 
 impl Profile {
     /// Create a new profile populated from supplied data
     ///   contacts_json as supplied by libcwtch-go, a map of contacts
     ///   server_list as supplied by libcwtch-go, a map of servers
-    pub fn new(identity: &str, name: &str, picture: &str, contacts_json: &str, server_list: &str) -> Profile {
+    pub fn new(
+        identity: &str,
+        name: &str,
+        picture: &str,
+        contacts_json: &str,
+        server_list: &str,
+    ) -> Profile {
         let contacts = Profile::process_contacts(contacts_json);
         let servers = Profile::process_servers(server_list);
-        Profile{ onion: identity.to_string(), nick: name.to_string(), image_path: picture.to_string(), attr: Default::default(), contacts: contacts, servers: servers }
+        Profile {
+            onion: identity.to_string(),
+            nick: name.to_string(),
+            image_path: picture.to_string(),
+            attr: Default::default(),
+            contacts: contacts,
+            servers: servers,
+        }
     }
 
     fn process_contacts(constacts_json: &str) -> HashMap<String, Contact> {

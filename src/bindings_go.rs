@@ -3,30 +3,35 @@
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 
-use std::ffi::{CString};
-use std::ffi::{CStr};
+use std::ffi::CStr;
+use std::ffi::CString;
 
-use super::{CwtchLib};
+use super::CwtchLib;
 use crate::cwtchlib_go::bindings;
 
 struct c_str_wrap {
     raw: *mut i8,
-    len: i32
+    len: i32,
 }
 
 impl c_str_wrap {
     pub fn new(str: &str) -> c_str_wrap {
         let cs = match CString::new(str) {
             Ok(s) => s,
-            Err(_) => CString::new("").unwrap()
+            Err(_) => CString::new("").unwrap(),
         };
-        c_str_wrap { len: cs.as_bytes().len() as i32, raw: cs.into_raw() }
+        c_str_wrap {
+            len: cs.as_bytes().len() as i32,
+            raw: cs.into_raw(),
+        }
     }
 }
 
 impl Drop for c_str_wrap {
     fn drop(&mut self) {
-        unsafe { CString::from_raw(self.raw); }
+        unsafe {
+            CString::from_raw(self.raw);
+        }
     }
 }
 
@@ -91,7 +96,9 @@ impl CwtchLib for CwtchLibGo {
     c_bind!(send_message(profile, contact, msg;) c_SendMessage);
     c_bind!(send_invitation(profile, contact, target;) c_SendInvitation);
     fn reset_tor(&self) {
-        unsafe { bindings::c_ResetTor(); }
+        unsafe {
+            bindings::c_ResetTor();
+        }
     }
     c_bind!(create_group(profile, server, name;) c_CreateGroup);
     c_bind!(delete_profile(profile, pass;) c_DeleteProfile);
@@ -103,6 +110,8 @@ impl CwtchLib for CwtchLibGo {
     c_bind!(set_group_attribute(profile, group, key, val;) c_SetGroupAttribute);
 
     fn shutdown_cwtch(&self) {
-        unsafe { bindings::c_ShutdownCwtch(); }
+        unsafe {
+            bindings::c_ShutdownCwtch();
+        }
     }
 }

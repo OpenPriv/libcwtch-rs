@@ -3,8 +3,8 @@
 #![doc(html_root_url = "https://git.openprivacy.ca/cwtch.im/libcwtch-rs")]
 #![deny(missing_docs)]
 
-mod cwtchlib_go;
 mod bindings_go;
+mod cwtchlib_go;
 
 /// Basic structs using data from Cwtch and for deserializing JSON and serializing to JSON to communicate with Cwtch
 pub mod structs;
@@ -18,7 +18,7 @@ pub trait CwtchLib {
     fn send_app_event(&self, event_json: &str);
 
     /// Pull json of a structs::CwtchEvent off the appbus for responding to
-    fn get_appbus_event(&self, ) -> String;
+    fn get_appbus_event(&self) -> String;
 
     /// Create a new profile encrypted with pass
     fn create_profile(&self, nick: &str, pass: &str);
@@ -36,7 +36,13 @@ pub trait CwtchLib {
     fn block_contact(&self, profile: &str, contact: &str);
 
     /// Cause profile to update contact's message to have it's flags updated
-    fn update_message_flags(&self, profile: &str, contact: &str, message_id: i32, message_flags: u64);
+    fn update_message_flags(
+        &self,
+        profile: &str,
+        contact: &str,
+        message_id: i32,
+        message_flags: u64,
+    );
 
     /// Get a specific message for contact of profile by index
     fn get_message(&self, profile: &str, contact: &str, message_index: i32) -> String;
@@ -51,7 +57,7 @@ pub trait CwtchLib {
     fn send_invitation(&self, profile: &str, contact: &str, target: &str);
 
     /// Ask the ACN inside the Cwtch app to restart the tor connection
-    fn reset_tor(&self, );
+    fn reset_tor(&self);
 
     /// Cause profile to create a group on server with name
     fn create_group(&self, profile: &str, server: &str, name: &str);
@@ -78,7 +84,7 @@ pub trait CwtchLib {
     fn set_group_attribute(&self, profile: &str, group: &str, key: &str, val: &str);
 
     /// Shutdown the cwtch app and associated ACN
-    fn shutdown_cwtch(&self, );
+    fn shutdown_cwtch(&self);
 }
 
 /// Create a new CwtchLib that is backed by bindings to libcwtch-go

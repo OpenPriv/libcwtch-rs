@@ -16,6 +16,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 #endif
 
+
 /* Start of boilerplate cgo prologue.  */
 #line 1 "cgo-gcc-export-header-prolog"
 
@@ -73,31 +74,46 @@ extern void c_SendProfileEvent(char* onion_ptr, int onion_len, char* json_ptr, i
 extern char* c_GetAppBusEvent();
 extern void c_CreateProfile(char* nick_ptr, int nick_len, char* pass_ptr, int pass_len);
 extern void c_LoadProfiles(char* passwordPtr, int passwordLen);
-extern void c_AcceptContact(char* profilePtr, int profileLen, char* handlePtr, int handleLen);
-extern void c_RejectInvite(char* profilePtr, int profileLen, char* handlePtr, int handleLen);
-extern void c_BlockContact(char* profilePtr, int profileLen, char* handlePtr, int handleLen);
-extern void c_UpdateMessageFlags(char* profile_ptr, int profile_len, char* handle_ptr, int handle_len, int mIdx, long unsigned int message_flags);
+extern void c_AcceptConversation(char* profilePtr, int profileLen, int conversation_id);
+extern void c_BlockContact(char* profilePtr, int profileLen, int conversation_id);
 
 // the pointer returned from this function **must** be Freed  by c_Free
-extern char* c_GetMessage(char* profile_ptr, int profile_len, char* handle_ptr, int handle_len, int message_index);
+extern char* c_GetMessage(char* profile_ptr, int profile_len, int conversation_id, int message_index);
+
+// the pointer returned from this function **must** be Freed  by c_Free
+extern char* c_GetMessageByID(char* profile_ptr, int profile_len, int conversation_id, int message_index);
 
 // the pointer returned from this function **must** be freed by calling c_Free
-extern char* c_GetMessagesByContentHash(char* profile_ptr, int profile_len, char* handle_ptr, int handle_len, char* contenthash_ptr, int contenthash_len);
+extern char* c_GetMessagesByContentHash(char* profile_ptr, int profile_len, int conversation_id, char* contenthash_ptr, int contenthash_len);
 
 // Dangerous function. Should only be used as documented in `MEMORY.md`
 extern void c_FreePointer(char* ptr);
-extern void c_SendMessage(char* profile_ptr, int profile_len, char* handle_ptr, int handle_len, char* msg_ptr, int msg_len);
-extern void c_SendInvitation(char* profile_ptr, int profile_len, char* handle_ptr, int handle_len, char* target_ptr, int target_len);
+extern void c_SendMessage(char* profile_ptr, int profile_len, int conversation_id, char* msg_ptr, int msg_len);
+extern void c_SendInvitation(char* profile_ptr, int profile_len, int conversation_id, int target_id);
+extern void c_ShareFile(char* profile_ptr, int profile_len, int conversation_id, char* filepath_ptr, int filepath_len);
+extern void c_DownloadFile(char* profile_ptr, int profile_len, int conversation_id, char* filepath_ptr, int filepath_len, char* manifestpath_ptr, int manifestpath_len, char* filekey_ptr, int filekey_len);
+extern void c_CheckDownloadStatus(char* profilePtr, int profileLen, char* fileKeyPtr, int fileKeyLen);
+extern void c_VerifyOrResumeDownload(char* profile_ptr, int profile_len, int conversation_id, char* filekey_ptr, int filekey_len);
 extern void c_ResetTor();
 extern void c_CreateGroup(char* profile_ptr, int profile_len, char* server_ptr, int server_len, char* name_ptr, int name_len);
 extern void c_DeleteProfile(char* profile_ptr, int profile_len, char* password_ptr, int password_len);
-extern void c_ArchiveConversation(char* profile_ptr, int profile_len, char* contact_ptr, int contact_len);
-extern void c_DeleteContact(char* profile_ptr, int profile_len, char* hanlde_ptr, int handle_len);
+extern void c_ArchiveConversation(char* profile_ptr, int profile_len, int conversation_id);
+extern void c_DeleteContact(char* profile_ptr, int profile_len, int conversation_id);
 extern void c_ImportBundle(char* profile_ptr, int profile_len, char* bundle_ptr, int bundle_len);
 extern void c_SetProfileAttribute(char* profile_ptr, int profile_len, char* key_ptr, int key_len, char* val_ptr, int val_len);
-extern void c_SetContactAttribute(char* profile_ptr, int profile_len, char* contact_ptr, int contact_len, char* key_ptr, int key_len, char* val_ptr, int val_len);
-extern void c_SetGroupAttribute(char* profile_ptr, int profile_len, char* group_ptr, int group_len, char* key_ptr, int key_len, char* val_ptr, int val_len);
+extern void c_SetConversationAttribute(char* profile_ptr, int profile_len, int conversation_id, char* key_ptr, int key_len, char* val_ptr, int val_len);
+extern void c_SetMessageAttribute(char* profile_ptr, int profile_len, int conversation_id, int channel_id, int message_id, char* key_ptr, int key_len, char* val_ptr, int val_len);
+extern void c_ChangePassword(char* profile_ptr, int profile_len, char* oldpassword_ptr, int oldpassword_len, char* newpassword_ptr, int newpassword_len, char* newpassword_again_ptr, int newpassword_again_len);
 extern void c_ShutdownCwtch();
+extern void c_LoadServers(char* passwordPtr, int passwordLen);
+extern void c_CreateServer(char* passwordPtr, int passwordLen, char* descPtr, int descLen, char autostart);
+extern void c_DeleteServer(char* onionPtr, int onionLen, char* currentPasswordPtr, int currentPasswordLen);
+extern void c_LaunchServers();
+extern void c_LaunchServer(char* onionPtr, int onionLen);
+extern void c_StopServer(char* onionPtr, int onionLen);
+extern void c_StopServers();
+extern void c_DestroyServers();
+extern void c_SetServerAttribute(char* onionPtr, int onionLen, char* keyPtr, int keyLen, char* valPtr, int valLen);
 
 #ifdef __cplusplus
 }

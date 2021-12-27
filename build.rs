@@ -11,6 +11,6 @@ fn main() {
     println!("cargo:rerun-if-changed=libCwtch.h");
 
     let lib_cwtch_path = Path::new(&out_dir).join("libCwtch.so");
-    // https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases v1.2.0
-    Command::new("wget").arg("https://git.openprivacy.ca/attachments/e77c69f0-9487-4808-bc23-092d943bc4a6").arg("-O").arg(lib_cwtch_path).output().expect("failed to download libCwtch.so");
+    // https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases v1.5.2
+    Command::new("wget").arg("https://git.openprivacy.ca/attachments/3e563341-c206-4e69-98e3-e0dca449f947").arg("-O").arg(lib_cwtch_path).output().expect("failed to download libCwtch.so");
 }

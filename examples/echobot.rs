@@ -6,7 +6,9 @@ use libcwtch::CwtchLib;
 
 fn main() {
     let bot_home = "example_cwtch_dir";
-    std::fs::remove_dir_all(&bot_home).expect("Error removing previous bot_home directory");
+    match std::fs::remove_dir_all(&bot_home) {
+        _ => ()
+    }
     std::fs::create_dir_all(&bot_home).expect("Error creating bot_home directory");
 
     let cwtch = libcwtch::new_cwtchlib_go();
@@ -45,14 +47,14 @@ fn main() {
                 }
                 "NewMessageFromPeer" => {
                     let to = &event.data["ProfileOnion"];
-                    let conversation = &event.data["RemotePeer"];
+                    let conversation_id = event.data["ConversationID"].parse::<i32>().unwrap();
                     let message: Message =
                         serde_json::from_str(&event.data["Data"]).expect("Error parsing message");
 
                     let response = Message { o: 1, d: message.d };
                     let response_json =
                         serde_json::to_string(&response).expect("Error parsing json response");
-                    cwtch.send_message(&to, &conversation, &response_json);
+                    cwtch.send_message(&to, conversation_id, &response_json);
                 }
                 _ => eprintln!("unhandled event!"),
             };

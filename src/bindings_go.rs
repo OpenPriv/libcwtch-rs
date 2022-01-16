@@ -80,7 +80,7 @@ macro_rules! c_bind {
 
 pub struct CwtchLibGo {}
 
-impl CwtchLib for CwtchLibGo    {
+impl CwtchLib for CwtchLibGo {
     c_bind!(start_cwtch(app_dir: &str, tor_path: &str;;) c_StartCwtch -> i32);
     c_bind!(send_app_event(event_json: &str;;) c_SendAppEvent);
     c_bind!(send_profile_event(profile: &str, event_jason: &str;;) c_SendProfileEvent);

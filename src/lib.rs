@@ -45,7 +45,12 @@ pub trait CwtchLib {
     fn get_message_by_id(&self, profile: &str, conversation_id: i32, message_id: i32) -> String;
 
     /// Get a specific message for conversation of profile by hash
-    fn get_message_by_content_hash(&self, profile: &str, conversation_id: i32, hash: &str) -> String;
+    fn get_message_by_content_hash(
+        &self,
+        profile: &str,
+        conversation_id: i32,
+        hash: &str,
+    ) -> String;
 
     /// Send json of a structs::Message from profile to contact
     fn send_message(&self, profile: &str, conversation_id: i32, msg: &str);
@@ -57,7 +62,14 @@ pub trait CwtchLib {
     fn share_file(&self, profile: &str, conversation_id: i32, file_path: &str);
 
     /// download a file from a conversation to the file_path
-    fn download_file(&self, profile: &str, conversation_id: i32, file_path: &str, manifest_path: &str, file_key: &str);
+    fn download_file(
+        &self,
+        profile: &str,
+        conversation_id: i32,
+        file_path: &str,
+        manifest_path: &str,
+        file_key: &str,
+    );
 
     /// Query the status of a download
     fn check_download_status(&self, profile: &str, file_key: &str);
@@ -90,7 +102,15 @@ pub trait CwtchLib {
     fn set_conversation_attribute(&self, profile: &str, conversation_id: i32, key: &str, val: &str);
 
     /// Set an attribute on a message in a conversation
-    fn set_message_attribute(&self, profile: &str, conversation_id: i32, channel_id: i32, message_id: i32, attribute_key: &str, attribute_value: &str);
+    fn set_message_attribute(
+        &self,
+        profile: &str,
+        conversation_id: i32,
+        channel_id: i32,
+        message_id: i32,
+        attribute_key: &str,
+        attribute_value: &str,
+    );
 
     /// Change a profile's password to new_pass if old_pass is correct
     fn change_password(&self, profile: &str, old_pass: &str, new_pass: &str, new_pass_again: &str);

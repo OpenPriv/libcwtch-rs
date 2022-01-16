@@ -7,7 +7,7 @@ use libcwtch::CwtchLib;
 fn main() {
     let bot_home = "example_cwtch_dir";
     match std::fs::remove_dir_all(&bot_home) {
-        _ => ()
+        _ => (),
     }
     std::fs::create_dir_all(&bot_home).expect("Error creating bot_home directory");
 

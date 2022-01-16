@@ -36,13 +36,16 @@ fn main() {
                     );
 
                     // process json for profile, contacts and servers...else {
-                    let profile = Profile::new(
+                    let profile = match Profile::new(
                         &event.data["Identity"],
                         &event.data["name"],
                         &event.data["picture"],
                         &event.data["ContactsJson"],
                         &event.data["ServerList"],
-                    );
+                    ) {
+                        Ok(p) => p,
+                        Err(e) => panic!("error parsing profile: {}", e)
+                    };
                     print!("profile: {:?}", profile);
                 }
                 "NewMessageFromPeer" => {

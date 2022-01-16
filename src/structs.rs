@@ -119,41 +119,53 @@ impl Profile {
         picture: &str,
         contacts_json: &str,
         server_list: &str,
-    ) -> Profile {
-        let contacts = Profile::process_contacts(contacts_json);
-        let servers = Profile::process_servers(server_list);
-        Profile {
+    ) -> Result<Profile, String> {
+        let contacts = match  Profile::process_contacts(contacts_json){
+            Ok(c) => c,
+            Err(e) => return Err(e)
+        };
+        let servers = match Profile::process_servers(server_list) {
+            Ok(s) => s,
+            Err(e) => return Err(e)
+        };
+        Ok(Profile {
             onion: identity.to_string(),
             nick: name.to_string(),
             image_path: picture.to_string(),
             attr: Default::default(),
             contacts: contacts,
             servers: servers,
-        }
+        })
     }
 
-    fn process_contacts(constacts_json: &str) -> HashMap<String, Contact> {
+    fn process_contacts(constacts_json: &str) -> Result<HashMap<String, Contact>, String> {
         let mut contacts: HashMap<String, Contact> = HashMap::new();
         if constacts_json == "null" {
-            return contacts;
+            return Ok(contacts);
         }
         println!("contacts_json: '{}'", constacts_json);
-        let contacts_map: Vec<Contact> = serde_json::from_str(constacts_json).unwrap();
+        let contacts_map: Vec<Contact> = match serde_json::from_str(constacts_json) {
+            Ok(cm) => cm,
+            Err(e) => return Err(format!("invalid json: {:?}", e))
+        };
         for contact in contacts_map {
             contacts.insert(contact.onion.clone(), contact);
         }
-        contacts
+        Ok(contacts)
     }
 
-    fn process_servers(servers_json: &str) -> HashMap<String, Server> {
+    fn process_servers(servers_json: &str) -> Result<HashMap<String, Server>, String> {
         let mut servers: HashMap<String, Server> = HashMap::new();
         if servers_json == "null" {
-            return servers;
+            return Ok(servers);
         }
-        let servers_map: Vec<Server> = serde_json::from_str(servers_json).unwrap();
+        let servers_map: Vec<Server> = match serde_json::from_str(servers_json) {
+            Ok(sm) => sm,
+            Err(e) => return Err(format!("invalid jason: {:?}", e))
+        };
         for server in servers_map {
             servers.insert(server.onion.clone(), server);
         }
-        servers
+        Ok(servers)
     }
 }

@@ -16,7 +16,6 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 #endif
 
-
 /* Start of boilerplate cgo prologue.  */
 #line 1 "cgo-gcc-export-header-prolog"
 
@@ -76,6 +75,7 @@ extern void c_CreateProfile(char* nick_ptr, int nick_len, char* pass_ptr, int pa
 extern void c_LoadProfiles(char* passwordPtr, int passwordLen);
 extern void c_AcceptConversation(char* profilePtr, int profileLen, int conversation_id);
 extern void c_BlockContact(char* profilePtr, int profileLen, int conversation_id);
+extern void c_UnblockContact(char* profilePtr, int profileLen, int conversation_id);
 
 // the pointer returned from this function **must** be Freed  by c_Free
 extern char* c_GetMessage(char* profile_ptr, int profile_len, int conversation_id, int message_index);

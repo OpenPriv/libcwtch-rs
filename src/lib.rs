@@ -35,9 +35,8 @@ pub trait CwtchLib {
     /// Cause profile to block conversation
     fn block_contact(&self, profile: &str, conversation_id: i32);
 
-    // TODO 1.5.3
     /// Cause profile to unblock contact
-    //fn unblock_contact(&self, profile: &str, conversation_id: i32);
+    fn unblock_contact(&self, profile: &str, conversation_id: i32);
 
     /// Get a specific message for conversation of profile by index
     fn get_message(&self, profile: &str, conversation_id: i32, message_index: i32) -> String;

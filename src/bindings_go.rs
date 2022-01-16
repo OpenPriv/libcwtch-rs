@@ -89,8 +89,7 @@ impl CwtchLib for CwtchLibGo    {
     c_bind!(load_profiles(pass: &str;;) c_LoadProfiles);
     c_bind!(accept_conversation(profile: &str ; conversation_id: i32 ;) c_AcceptConversation);
     c_bind!(block_contact(profile: &str ; conversation_id: i32; ) c_BlockContact);
-    // todo 1.5.3
-    //c_bind!(unblock_contact(profile: &str ; conversation_id: i32; ) c_UnblockContact);
+    c_bind!(unblock_contact(profile: &str ; conversation_id: i32; ) c_UnblockContact);
     c_bind!(get_message(profile: &str; conversation_id: i32,  message_index: i32 ;) c_GetMessage -> String);
     c_bind!(get_message_by_id(profile: &str ; conversation_id: i32, message_id: i32 ;) c_GetMessageByID -> String);
     c_bind!(get_message_by_content_hash(profile: &str ; conversation_id: i32 ; hash: &str) c_GetMessagesByContentHash -> String);

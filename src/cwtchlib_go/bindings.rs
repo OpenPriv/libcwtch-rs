@@ -254,6 +254,13 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn c_UnblockContact(
+        profilePtr: *mut ::std::os::raw::c_char,
+        profileLen: ::std::os::raw::c_int,
+        conversation_id: ::std::os::raw::c_int,
+    );
+}
+extern "C" {
     pub fn c_GetMessage(
         profile_ptr: *mut ::std::os::raw::c_char,
         profile_len: ::std::os::raw::c_int,

@@ -1,13 +1,17 @@
 [package]
 name = "libcwtch"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Dan Ballard <dan@mindstab.net>"]
 edition = "2018"
 license = "MIT"
 description = "libcwtch is an interface to a Cwtch app that allows creating of profiles to communicate with contacts over the Cwtch protocol"
 repository = "https://git.openprivacy.ca/cwtch.im/libcwtch-rs"
 readme = "README.md"
-documentation = "https://docs.rs/libcwtch/0.1.0/libcwtch/"
+documentation = "https://docs.rs/libcwtch/0.2.0/libcwtch/"
+
+[build-dependencies]
+hex-literal = "0.3.4"
+sha2 = "0.10.1"
 
 [dependencies]
 libc = "0.2"

@@ -120,13 +120,13 @@ impl Profile {
         contacts_json: &str,
         server_list: &str,
     ) -> Result<Profile, String> {
-        let contacts = match  Profile::process_contacts(contacts_json){
+        let contacts = match Profile::process_contacts(contacts_json) {
             Ok(c) => c,
-            Err(e) => return Err(e)
+            Err(e) => return Err(e),
         };
         let servers = match Profile::process_servers(server_list) {
             Ok(s) => s,
-            Err(e) => return Err(e)
+            Err(e) => return Err(e),
         };
         Ok(Profile {
             onion: identity.to_string(),
@@ -146,7 +146,7 @@ impl Profile {
         println!("contacts_json: '{}'", constacts_json);
         let contacts_map: Vec<Contact> = match serde_json::from_str(constacts_json) {
             Ok(cm) => cm,
-            Err(e) => return Err(format!("invalid json: {:?}", e))
+            Err(e) => return Err(format!("invalid json: {:?}", e)),
         };
         for contact in contacts_map {
             contacts.insert(contact.onion.clone(), contact);
@@ -161,7 +161,7 @@ impl Profile {
         }
         let servers_map: Vec<Server> = match serde_json::from_str(servers_json) {
             Ok(sm) => sm,
-            Err(e) => return Err(format!("invalid jason: {:?}", e))
+            Err(e) => return Err(format!("invalid json: {:?}", e)),
         };
         for server in servers_map {
             servers.insert(server.onion.clone(), server);

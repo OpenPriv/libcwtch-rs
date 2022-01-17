@@ -9,6 +9,10 @@ repository = "https://git.openprivacy.ca/cwtch.im/libcwtch-rs"
 readme = "README.md"
 documentation = "https://docs.rs/libcwtch/0.1.0/libcwtch/"
 
+[build-dependencies]
+hex-literal = "0.3.4"
+sha2 = "0.10.1"
+
 [dependencies]
 libc = "0.2"
 serde_json = "1.0"

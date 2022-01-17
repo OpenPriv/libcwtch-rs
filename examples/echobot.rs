@@ -7,6 +7,7 @@ use libcwtch::CwtchLib;
 fn main() {
     let bot_home = "example_cwtch_dir";
     match std::fs::remove_dir_all(&bot_home) {
+        // this will always error on first run as we haven't created the directory, it's just a function to clear it on successive runs, so this error is to be ignored
         _ => (),
     }
     std::fs::create_dir_all(&bot_home).expect("Error creating bot_home directory");
@@ -44,7 +45,7 @@ fn main() {
                         &event.data["ServerList"],
                     ) {
                         Ok(p) => p,
-                        Err(e) => panic!("error parsing profile: {}", e)
+                        Err(e) => panic!("error parsing profile: {}", e),
                     };
                     print!("profile: {:?}", profile);
                 }
